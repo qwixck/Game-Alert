@@ -14,6 +14,8 @@ class EpicGames(commands.Cog):
         await self.bot.wait_until_ready()
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
+                if not request.ok:
+                    return print(f"Something wrong with Epic Games API! Code: {request.status}")
                 epicGames = await request.json()
         await session.close()
         list = []
@@ -21,7 +23,7 @@ class EpicGames(commands.Cog):
             games = json.load(f)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
             if i["price"]["totalPrice"]["discountPrice"] == 0 and i["title"] not in games:
-                embed = discord.Embed(title=i["title"], description=i["description"])
+                embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
                 embed.set_image(url=i["keyImages"][1]["url"])
                 embed.set_footer(text="Epic Games")
                 list.append(embed)

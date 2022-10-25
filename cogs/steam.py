@@ -16,6 +16,8 @@ class Steam(commands.Cog):
     async def steam(self):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': UA }) as request:
+                if not request.ok:
+                    return print(f"Something wrong with Steam store! Code: {request.status}")
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
@@ -23,7 +25,7 @@ class Steam(commands.Cog):
             games = json.load(f)
         for i in sp.find(id="search_resultsRows").find_all("a"):
             if not i.find("div", {"class": "responsive_search_name_combined"}).span.text in games:
-                embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"])
+                embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"], color=discord.Color.blurple())
                 embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
                 embed.set_footer(text="Steam")
                 list.append(embed)

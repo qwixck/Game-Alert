@@ -6,9 +6,10 @@ from discord.ext import commands, tasks
 
 import json
 
-load_dotenv()
+intents = discord.Intents.default()
+intents.message_content = True
 
-bot = commands.Bot(command_prefix=commands.when_mentioned_or("g!"))
+bot = commands.Bot(command_prefix=commands.when_mentioned_or("g!"), intents=intents, help_command=None)
 
 @bot.event
 async def on_ready():
@@ -41,4 +42,5 @@ for filename in os.listdir("./cogs"):
 
 watching.start()
 
+load_dotenv()
 bot.run(os.getenv("DISCORD_TOKEN"))
