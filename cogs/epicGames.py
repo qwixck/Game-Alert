@@ -20,7 +20,7 @@ class EpicGames(commands.Cog):
         with open("assets/data/games.json", "r") as f:
             games = json.load(f)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
-            if i["price"]["totalPrice"]["discountPrice"] == 0 and not i["title"] in games:
+            if i["price"]["totalPrice"]["discountPrice"] == 0 and i["title"] not in games:
                 embed = discord.Embed(title=i["title"], description=i["description"])
                 embed.set_image(url=i["keyImages"][1]["url"])
                 embed.set_footer(text="Epic Games")
@@ -32,7 +32,10 @@ class EpicGames(commands.Cog):
             channels = json.load(f)
         for channel in channels:
             _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
-            await _channel.send(embeds=list)
+            try:
+                await _channel.send(embeds=list)
+            except discord.errors.HTTPException:
+                pass
 
 def setup(bot: commands.Bot):
     bot.add_cog(EpicGames(bot))

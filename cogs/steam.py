@@ -19,22 +19,26 @@ class Steam(commands.Cog):
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
-        with open("assets/games.json", "r") as f:
+        with open("assets/data/games.json", "r") as f:
             games = json.load(f)
         for i in sp.find(id="search_resultsRows").find_all("a"):
             if not i.find("div", {"class": "responsive_search_name_combined"}).span.text in games:
+                print(i["href"])
                 embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"])
                 embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
                 embed.set_footer(text="Steam")
                 list.append(embed)
                 games.append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
-        with open("assets/games.json", "w") as f:
+        with open("assets/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
-        with open("assets/games.json", "r") as f:
+        with open("assets/data/channels.json", "r") as f:
             channels = json.load(f)
         for channel in channels:
             _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
-            await _channel.send(embeds=list)
+            try:
+                await _channel.send(embeds=list)
+            except discord.errors.HTTPException:
+                pass
 
 def setup(bot: commands.Bot):
     bot.add_cog(Steam(bot))
