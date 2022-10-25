@@ -23,7 +23,6 @@ class Steam(commands.Cog):
             games = json.load(f)
         for i in sp.find(id="search_resultsRows").find_all("a"):
             if not i.find("div", {"class": "responsive_search_name_combined"}).span.text in games:
-                print(i["href"])
                 embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"])
                 embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
                 embed.set_footer(text="Steam")
