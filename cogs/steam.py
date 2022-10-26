@@ -5,17 +5,16 @@ import aiohttp
 import json
 from bs4 import BeautifulSoup
 
-UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
-
 class Steam(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self.UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
         self.steam.start()
 
     @tasks.loop(minutes=1)
     async def steam(self):
         async with aiohttp.ClientSession() as session:
-            async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': UA }) as request:
+            async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
                     return print(f"Something wrong with Steam store! Code: {request.status}")
                 sp = BeautifulSoup(await request.text(), "html.parser")
