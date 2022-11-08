@@ -4,6 +4,7 @@ from discord.ext import commands
 import json
 import aiohttp
 from bs4 import BeautifulSoup
+import datetime
 
 class Commands(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -17,11 +18,57 @@ class Commands(commands.Cog):
 
         data[str(ctx.guild.id)] = {}
         data[str(ctx.guild.id)]["channel"] = channel.id
+        old_channel = data[str(ctx.guild.id)]["channel"]
 
         with open("assets/data/channels.json", "w") as f:
             json.dump(data, f, indent=2)
 
-        await ctx.respond(f"Successfully changed announment channel to {channel.mention}")
+        embed = discord.Embed(title="Success", description=f"Successfully changed channel from {old_channel if old_channel else None} to {channel.mention}", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
+        await ctx.respond(embed=embed)
+
+    @discord.slash_command(description="Menu for configurating bot")
+    async def menu(self, ctx: discord.ApplicationContext):
+        class Select(discord.ui.Select):
+            def __init__(self):
+                super().__init__(placeholder="Choose option")
+                self.add_option(label="Current channel", description="See the current announcement channel", emoji="📝", value="channel")
+                self.add_option(label="Commands", description="See all commands that are available", emoji="📄", value="commands")
+                self.add_option(label="Settings", description="Not available yet!", emoji="⚙", value="settings")
+
+                async def callback(interaction: discord.Interaction):
+                    if interaction.user != ctx.author:
+                        await interaction.response.send_message("Sorry, you can't do that!")
+                    else:
+                        if self.values[0] == "channel":
+                            with open("assets/data/channels.json", "r") as f:
+                                data = json.load(f)
+                            try:
+                                channel = f"<#{data[str(ctx.guild.id)]['channel']}>"
+                            except KeyError:
+                                channel = None
+                            embed = discord.Embed(title="Current announcement channel", description=f"The current channel is {channel}", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
+                            embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
+                            await interaction.response.edit_message(embed=embed)
+                        if self.values[0] == "commands":
+                            embed = discord.Embed(title="Commands", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
+                            embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
+                            embed.add_field(name="</games:1034870882256035841>", value="> `Get all free games that are available`")
+                            embed.add_field(name="</set_channel:1033074721387978792>", value="> `Set channel for announcements`")
+                            embed.add_field(name="</menu:0>", value="> `Menu for configurating bot`")
+                            await interaction.response.edit_message(embed=embed)
+                        if self.values[0] == "settings":
+                            embed = discord.Embed(title="Still developing", description="Not available right now...", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
+                            await interaction.response.send_message(embed=embed, ephemeral=True)
+                self.callback = callback
+        embed = discord.Embed(title="Menu", description="Available configurations for bot", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
+        embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
+        embed.add_field(name="📝 Channel", value="> `Current channel`")
+        embed.add_field(name="📄 Commands", value="> `See all commands that are available`")
+        embed.add_field(name="⚙ Settings", value="> `Not available yet!`")
+        view = discord.ui.View(timeout=None)
+        view.add_item(Select())
+        await ctx.respond(embed=embed, view=view)
+
 
     @discord.slash_command(description="Get current free games")
     async def games(self, ctx: discord.ApplicationContext):
