@@ -10,14 +10,15 @@
 1. Download and install [Python](https://www.python.org/downloads/).
 2. Download and unarchive repo.
 3. Open CMD and change the directory to folder you just unarchived.
-4. Type in CMD:
+4. Open `.env` file and replace `token` with your bot token
+5. Type in CMD:
     ```
     pip install -r requirements.txt
     ```
     ```
     python main.py
     ```
-And you're done!
+    And you're done!
 ## Installation for Linux
 1. Open CMD and type:
     ```
@@ -29,10 +30,12 @@ And you're done!
     ```
     cd game-alert
     ```
+2. Open `.env` file and replace `token` with your bot token
+3. Type in CMD:
     ```
     pip install -r requirements.txt
     ```
     ```
     python3 main.py
     ```
-And you're done!
+    And you're done!

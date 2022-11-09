@@ -11,7 +11,7 @@ class Commands(commands.Cog):
         self.bot = bot
         self.UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
 
-    @discord.slash_command(description="Set channel where you want to free games be announced")
+    @commands.slash_command(description="Set channel where you want to free games be announced")
     async def set_channel(self, ctx: discord.ApplicationContext, channel: discord.TextChannel):
         with open("assets/data/channels.json", "r") as f:
             data = json.load(f)
@@ -26,7 +26,7 @@ class Commands(commands.Cog):
         embed = discord.Embed(title="Success", description=f"Successfully changed channel from {old_channel if old_channel else None} to {channel.mention}", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
         await ctx.respond(embed=embed)
 
-    @discord.slash_command(description="Menu for configurating bot")
+    @commands.slash_command(description="Menu for configurating bot")
     async def menu(self, ctx: discord.ApplicationContext):
         class Select(discord.ui.Select):
             def __init__(self):
@@ -70,7 +70,7 @@ class Commands(commands.Cog):
         await ctx.respond(embed=embed, view=view)
 
 
-    @discord.slash_command(description="Get current free games")
+    @commands.slash_command(description="Get current free games")
     async def games(self, ctx: discord.ApplicationContext):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
