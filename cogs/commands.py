@@ -52,13 +52,15 @@ class Commands(commands.Cog):
                         if self.values[0] == "commands":
                             embed = discord.Embed(title="Commands", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
                             embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
-                            embed.add_field(name="</games:1034870882256035841>", value="> `Get all free games that are available`")
-                            embed.add_field(name="</set_channel:1033074721387978792>", value="> `Set channel for announcements`")
+                            embed.add_field(name="</games:0>", value="> `Get all free games that are available`")
+                            embed.add_field(name="</set_channel:0>", value="> `Set channel for announcements`")
                             embed.add_field(name="</menu:0>", value="> `Menu for configurating bot`")
+                            embed.add_field(name="</status:0>", value="Get all stores status")
                             await interaction.response.edit_message(embed=embed)
                         if self.values[0] == "settings":
                             embed = discord.Embed(title="Still developing", description="Not available right now...", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
                             await interaction.response.send_message(embed=embed, ephemeral=True)
+                            
                 self.callback = callback
         embed = discord.Embed(title="Menu", description="Available configurations for bot", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
         embed.set_thumbnail(url=ctx.guild.icon.url if ctx.guild.icon else None)
@@ -69,17 +71,18 @@ class Commands(commands.Cog):
         view.add_item(Select())
         await ctx.respond(embed=embed, view=view)
 
-
     @commands.slash_command(description="Get current free games")
     async def games(self, ctx: discord.ApplicationContext):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
                 if not request.ok:
-                    return print(f"Something wrong with Epic Games API! Code: {request.status}")
+                    print(f"Something wrong with Epic Games API! Code: {request.status}")
+                    raise discord.errors.ApplicationCommandError()
                 epicGames = await request.json()
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
-                    return print(f"Something wrong with Steam store! Code: {request.status}")
+                    print(f"Something wrong with Steam store! Code: {request.status}")
+                    raise discord.errors.ApplicationCommandError()
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
@@ -95,6 +98,18 @@ class Commands(commands.Cog):
                 embed.set_footer(text="Epic Games")
                 list.append(embed)
         await ctx.respond(embeds=list, ephemeral=True)
+
+    @commands.slash_command(description="Get all stores status")
+    async def status(self, ctx: discord.ApplicationContext):
+        async with aiohttp.ClientSession() as session:
+            epicGames = await session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions")
+            steam = await session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA })
+        await session.close()
+        embed = discord.Embed(title="Status", color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
+        embed.add_field(name="Epic Games", value=f"Status code: {epicGames.status}", inline=False)
+        embed.add_field(name="Steam", value=f"Status code: {steam.status}", inline=False)
+        embed.set_author(name="Click to see all codes description", url="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status")
+        await ctx.respond(embed=embed)
 
 def setup(bot: commands.Bot):
     bot.add_cog(Commands(bot))
