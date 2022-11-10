@@ -16,7 +16,8 @@ class Steam(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
-                    return print(f"Something wrong with Steam store! Code: {request.status}")
+                    print(f"Something wrong with Steam store! Code: {request.status}")
+                    raise discord.errors.ApplicationCommandError()
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
@@ -34,11 +35,13 @@ class Steam(commands.Cog):
         with open("assets/data/channels.json", "r") as f:
             channels = json.load(f)
         for channel in channels:
-            _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
             try:
+                _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
                 await _channel.send(embeds=list)
             except discord.errors.HTTPException:
                 pass
+            except Exception as e:
+                print(f"Unknown error: {e}")
 
 def setup(bot: commands.Bot):
     bot.add_cog(Steam(bot))

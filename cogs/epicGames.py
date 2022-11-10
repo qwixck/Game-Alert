@@ -15,7 +15,8 @@ class EpicGames(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
                 if not request.ok:
-                    return print(f"Something wrong with Epic Games API! Code: {request.status}")
+                    print(f"Something wrong with Epic Games API! Code: {request.status}")
+                    raise discord.errors.ApplicationCommandError()
                 epicGames = await request.json()
         await session.close()
         list = []
@@ -33,11 +34,13 @@ class EpicGames(commands.Cog):
         with open("assets/data/channels.json", "r") as f:
             channels = json.load(f)
         for channel in channels:
-            _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
             try:
+                _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
                 await _channel.send(embeds=list)
             except discord.errors.HTTPException:
                 pass
+            except Exception as e:
+                print(f"Unknown error: {e}")
 
 def setup(bot: commands.Bot):
     bot.add_cog(EpicGames(bot))
