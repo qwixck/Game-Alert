@@ -10,7 +10,7 @@
 1. Download and install [Python](https://www.python.org/downloads/).
 2. Download and unarchive repo.
 3. Open CMD and change the directory to folder you just unarchived.
-4. Open `.env` file and replace `TOKEN` with your bot token
+4. Open `.env` file and replace `TOKEN` with your bot token ([guide to how create bot](https://discord.com/developers/docs/getting-started#creating-an-app))
 5. Type in CMD:
     ```
     pip install -r requirements.txt
@@ -30,7 +30,7 @@
     ```
     cd game-alert
     ```
-2. Open `.env` file and replace `TOKEN` with your bot token
+2. Open `.env` file and replace `TOKEN` with your bot token ([guide to how create bot](https://discord.com/developers/docs/getting-started#creating-an-app))
 3. Type in CMD:
     ```
     pip install -r requirements.txt
