@@ -92,7 +92,7 @@ class Commands(commands.Cog):
             embed.set_footer(text="Steam")
             list.append(embed)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
-            if i["price"]["totalPrice"]["discountPrice"] == 0:
+            if i["price"]["totalPrice"]["discountPrice"] == 0 and len(i["price"]["lineOffers"][0]["appliedRules"]) != 0 and datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) >= datetime.datetime.now():
                 embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
                 embed.set_image(url=i["keyImages"][1]["url"])
                 embed.set_footer(text="Epic Games")
