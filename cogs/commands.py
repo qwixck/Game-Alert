@@ -37,7 +37,7 @@ class Commands(commands.Cog):
 
                 async def callback(interaction: discord.Interaction):
                     if interaction.user != ctx.author:
-                        await interaction.response.send_message("Sorry, you can't do that!")
+                        await interaction.response.send_message("Sorry, you can't do that!", ephemeral=True)
                     else:
                         if self.values[0] == "channel":
                             with open("assets/data/channels.json", "r") as f:
