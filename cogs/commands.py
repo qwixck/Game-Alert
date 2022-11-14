@@ -55,7 +55,8 @@ class Commands(commands.Cog):
                             embed.add_field(name="</games:0>", value="> `Get all free games that are available`")
                             embed.add_field(name="</set_channel:0>", value="> `Set channel for announcements`")
                             embed.add_field(name="</menu:0>", value="> `Menu for configurating bot`")
-                            embed.add_field(name="</status:0>", value="Get all stores status")
+                            embed.add_field(name="</status:0>", value="> `Get all stores status`")
+                            embed.add_field(name="</ping:0>", value="> `Shows bot's ping`")
                             await interaction.response.edit_message(embed=embed)
                         if self.values[0] == "settings":
                             embed = discord.Embed(title="Still developing", description="Not available right now...", timestamp=datetime.datetime.utcnow(), color=discord.Color.blurple())
@@ -109,6 +110,12 @@ class Commands(commands.Cog):
         embed.add_field(name="Epic Games", value=f"Status code: {epicGames.status}", inline=False)
         embed.add_field(name="Steam", value=f"Status code: {steam.status}", inline=False)
         embed.set_author(name="Click to see all codes description", url="https://developer.mozilla.org/en-US/docs/Web/HTTP/Status")
+        await ctx.respond(embed=embed)
+
+    @commands.slash_command(description="Shows bot's ping")
+    async def ping(self, ctx: discord.ApplicationContext):
+        embed = discord.Embed(title="Pong!", description=f"⏳: {round(self.bot.latency * 1000)} ms", color=discord.Color.blurple(), timestamp=datetime.datetime.now())
+        embed.set_thumbnail(url=self.bot.user.display_avatar)
         await ctx.respond(embed=embed)
 
 def setup(bot: commands.Bot):
