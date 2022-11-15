@@ -17,7 +17,6 @@ class Steam(commands.Cog):
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
                     print(f"Something wrong with Steam store! Code: {request.status}")
-                    raise discord.errors.ApplicationCommandError()
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []

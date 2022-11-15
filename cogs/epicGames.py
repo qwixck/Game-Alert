@@ -17,7 +17,6 @@ class EpicGames(commands.Cog):
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
                 if not request.ok:
                     print(f"Something wrong with Epic Games API! Code: {request.status}")
-                    raise discord.errors.ApplicationCommandError()
                 epicGames = await request.json()
         await session.close()
         list = []

@@ -78,12 +78,10 @@ class Commands(commands.Cog):
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
                 if not request.ok:
                     print(f"Something wrong with Epic Games API! Code: {request.status}")
-                    raise discord.errors.ApplicationCommandError()
                 epicGames = await request.json()
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
                     print(f"Something wrong with Steam store! Code: {request.status}")
-                    raise discord.errors.ApplicationCommandError()
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
