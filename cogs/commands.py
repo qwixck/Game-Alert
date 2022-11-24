@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands
+from discord.ext import commands, pages
 
 import json
 import aiohttp
@@ -93,10 +93,10 @@ class Commands(commands.Cog):
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
             if i["price"]["totalPrice"]["discountPrice"] == 0 and len(i["price"]["lineOffers"][0]["appliedRules"]) != 0 and datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) >= datetime.datetime.now():
                 embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
-                embed.set_image(url=i["keyImages"][1]["url"])
+                embed.set_image(url=i["keyImages"][0]["url"])
                 embed.set_footer(text="Epic Games")
                 list.append(embed)
-        await ctx.respond(embeds=list, ephemeral=True)
+        await pages.Paginator(list, timeout=None).respond(ctx.interaction, ephemeral=True)
 
     @commands.slash_command(description="Get all stores status")
     async def status(self, ctx: discord.ApplicationContext):
