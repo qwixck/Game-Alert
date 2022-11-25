@@ -4,11 +4,13 @@ from discord.ext import commands, tasks
 import aiohttp
 import json
 from bs4 import BeautifulSoup
+import datetime
 
 class Steam(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
         self.UA = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.88 Safari/537.36'
+        self.steamIcon = "https://upload.wikimedia.org/wikipedia/commons/thumb/8/83/Steam_icon_logo.svg/512px-Steam_icon_logo.svg.png"
         self.steam.start()
 
     @tasks.loop(minutes=1)
@@ -24,9 +26,9 @@ class Steam(commands.Cog):
             games = json.load(f)
         for i in sp.find(id="search_resultsRows").find_all("a"):
             if not i.find("div", {"class": "responsive_search_name_combined"}).span.text in games:
-                embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"], color=discord.Color.blurple())
+                embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"], color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
                 embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
-                embed.set_footer(text="Steam")
+                embed.set_author(name="Steam", icon_url=self.steamIcon)
                 list.append(embed)
                 games.append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
         with open("assets/data/games.json", "w") as f:
