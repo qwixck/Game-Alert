@@ -24,8 +24,8 @@ class EpicGames(commands.Cog):
         with open("assets/data/games.json", "r") as f:
             games = json.load(f)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
-            if i["price"]["totalPrice"]["discountPrice"] == 0 and len(i["price"]["lineOffers"][0]["appliedRules"]) != 0 and datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) >= datetime.datetime.now() and i["title"] not in games:
-                embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
+            if i["price"]["totalPrice"]["discountPrice"] == 0 and (datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) if len(i["price"]["lineOffers"][0]["appliedRules"]) else datetime.datetime.now() - datetime.timedelta(days=7) >= datetime.datetime.now()) or (datetime.datetime.fromisoformat(str(i["promotions"]["promotionalOffers"][0]["promotionalOffers"][0]["endDate"]).replace("Z", "")) if len(i["promotions"]["promotionalOffers"]) else datetime.datetime.now() - datetime.timedelta(days=7)) >= datetime.datetime.now():
+                embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
                 embed.set_image(url=i["keyImages"][0]["url"])
                 embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
                 list.append(embed)
