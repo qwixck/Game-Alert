@@ -87,11 +87,14 @@ class Commands(commands.Cog):
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
-        for i in sp.find(id="search_resultsRows").find_all("a"):
-            embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"], color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
-            embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
-            embed.set_author(name="Steam", icon_url=self.steamIcon)
-            list.append(embed)
+        try:
+            for i in sp.find(id="search_resultsRows").find_all("a"):
+                embed = discord.Embed(title=i.find("div", {"class": "responsive_search_name_combined"}).span.text, url=i["href"], color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
+                embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
+                embed.set_author(name="Steam", icon_url=self.steamIcon)
+                list.append(embed)
+        except AttributeError:
+            pass
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
             if i["price"]["totalPrice"]["discountPrice"] == 0 and len(i["price"]["lineOffers"][0]["appliedRules"]) != 0 and datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) >= datetime.datetime.now():
                 embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
