@@ -22,7 +22,7 @@ class Steam(commands.Cog):
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
-        with open("assets/data/games.json", "r") as f:
+        with open("./src/data/games.json", "r") as f:
             games = json.load(f)
         try:
             for i in sp.find(id="search_resultsRows").find_all("a"):
@@ -32,12 +32,15 @@ class Steam(commands.Cog):
                     embed.set_author(name="Steam", icon_url=self.steamIcon)
                     list.append(embed)
                     games.append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
+                for g in games:
+                    if g != i.find("div", {"class": "responsive_search_name_combined"}).span.text:
+                        games.pop(games.index(g))
         except AttributeError:
             # try/except handle if no games/dlcs are available
             pass
-        with open("assets/data/games.json", "w") as f:
+        with open("./src/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
-        with open("assets/data/channels.json", "r") as f:
+        with open("./src/data/channels.json", "r") as f:
             channels = json.load(f)
         for channel in channels:
             try:
