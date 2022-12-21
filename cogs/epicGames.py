@@ -21,18 +21,21 @@ class EpicGames(commands.Cog):
                 epicGames = await request.json()
         await session.close()
         list = []
-        with open("assets/data/games.json", "r") as f:
+        with open("./src/data/games.json", "r") as f:
             games = json.load(f)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
-            if i["price"]["totalPrice"]["discountPrice"] == 0 and (datetime.datetime.fromisoformat(str(i["price"]["lineOffers"][0]["appliedRules"][0]["endDate"]).replace("Z", "")) if len(i["price"]["lineOffers"][0]["appliedRules"]) else datetime.datetime.now() - datetime.timedelta(days=7) >= datetime.datetime.now()) or ((datetime.datetime.fromisoformat(str(i["promotions"]["promotionalOffers"][0]["promotionalOffers"][0]["endDate"]).replace("Z", "")) if len(i["promotions"]["promotionalOffers"]) else datetime.datetime.now() - datetime.timedelta(days=7)) >= datetime.datetime.now()) and i["title"] not in games:
-                embed = discord.Embed(title=i["title"], description=i["description"], color=discord.Color.blurple())
-                embed.set_image(url=i["keyImages"][0]["url"])
-                embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
-                list.append(embed)
-                games.append(i["title"])
-        with open("assets/data/games.json", "w") as f:
+            if i["promotions"]:
+                if i["promotions"]["promotionalOffers"]:
+                    if not i["price"]["totalPrice"]["discountPrice"]:
+                        if i["title"] not in games:
+                            embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple())
+                            embed.set_image(url=i["keyImages"][0]["url"])
+                            embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
+                            list.append(embed)
+                            games.append(i["title"])
+        with open("./src/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
-        with open("assets/data/channels.json", "r") as f:
+        with open("./src/data/channels.json", "r") as f:
             channels = json.load(f)
         for channel in channels:
             try:
