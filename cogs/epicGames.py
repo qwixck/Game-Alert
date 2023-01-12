@@ -3,7 +3,6 @@ from discord.ext import commands, tasks
 
 import aiohttp
 import json
-import datetime
 
 class EpicGames(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -22,21 +21,21 @@ class EpicGames(commands.Cog):
         await session.close()
         list = []
         with open("./src/data/games.json", "r") as f:
-            games = json.load(f)
+            games: dict = json.load(f)
         for i in epicGames["data"]["Catalog"]["searchStore"]["elements"]:
             if i["promotions"]:
                 if i["promotions"]["promotionalOffers"]:
                     if not i["price"]["totalPrice"]["discountPrice"]:
-                        if i["title"] not in games:
+                        if i["title"] not in games["games"]:
                             embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple())
                             embed.set_image(url=i["keyImages"][0]["url"])
                             embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
                             list.append(embed)
-                            games.append(i["title"])
+                            games["games"].append(i["title"])
         with open("./src/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
         with open("./src/data/channels.json", "r") as f:
-            channels = json.load(f)
+            channels: dict = json.load(f)
         for channel in channels:
             try:
                 _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])

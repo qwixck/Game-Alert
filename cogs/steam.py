@@ -23,7 +23,7 @@ class Steam(commands.Cog):
         await session.close()
         list = []
         with open("./src/data/games.json", "r") as f:
-            games = json.load(f)
+            games: dict = json.load(f)
         try:
             for i in sp.find(id="search_resultsRows").find_all("a"):
                 if not i.find("div", {"class": "responsive_search_name_combined"}).span.text in games:
@@ -31,7 +31,7 @@ class Steam(commands.Cog):
                     embed.set_thumbnail(url=i.find("div", {"class": "col search_capsule"}).img["src"])
                     embed.set_author(name="Steam", icon_url=self.steamIcon)
                     list.append(embed)
-                    games.append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
+                    games["games"].append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
                 for g in games:
                     if g != i.find("div", {"class": "responsive_search_name_combined"}).span.text:
                         games.pop(games.index(g))
@@ -41,7 +41,7 @@ class Steam(commands.Cog):
         with open("./src/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
         with open("./src/data/channels.json", "r") as f:
-            channels = json.load(f)
+            channels: dict = json.load(f)
         for channel in channels:
             try:
                 _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
