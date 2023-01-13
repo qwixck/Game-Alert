@@ -6,6 +6,9 @@
 ### What stores does it support?
 > It's supports Steam and Epic Games at the moment.
 
+## How to start the bot notifying?
+> Simply use `/set_channel` slash command and set channel where you want to be notified.
+
 ## Installation for Windows:
 1. Download and install [Python](https://www.python.org/downloads/).
 2. Download and unarchive repo.

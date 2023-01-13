@@ -14,7 +14,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or("g!"), intents=inte
 @tasks.loop(minutes=1)
 async def watching():
     await bot.wait_until_ready()
-    with open("assets/data/channels.json", "r") as f:
+    with open("./src/data/channels.json", "r") as f:
         data = json.load(f)
 
     await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"{len(data)} channels"))
