@@ -18,7 +18,7 @@ class Steam(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
-                    print(f"Something wrong with Steam store! Code: {request.status}")
+                    print(f"Something wrong with Steam store! HTTP code: {request.status}")
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
@@ -32,11 +32,11 @@ class Steam(commands.Cog):
                     embed.set_author(name="Steam", icon_url=self.steamIcon)
                     list.append(embed)
                     games["games"].append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
-                for g in games:
+                for g in games["games"]:
                     if g != i.find("div", {"class": "responsive_search_name_combined"}).span.text:
-                        games.pop(games.index(g))
+                        games["games"].pop(games["games"].index(g))
+        # if no games/dlcs are available
         except AttributeError:
-            # try/except handle if no games/dlcs are available
             pass
         with open("./src/data/games.json", "w") as f:
             json.dump(games, f, indent=2)
@@ -44,9 +44,11 @@ class Steam(commands.Cog):
             channels: dict = json.load(f)
         for channel in channels:
             try:
-                _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
+                _channel = self.bot.get_channel(channels[str(channel)]["channel"])
                 await _channel.send(embeds=list)
             except discord.errors.HTTPException:
+                pass
+            except AttributeError:
                 pass
             except Exception as e:
                 print(f"Unknown error: {e}")
