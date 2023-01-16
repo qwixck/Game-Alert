@@ -79,11 +79,11 @@ class Commands(commands.Cog):
         async with aiohttp.ClientSession() as session:
             async with session.get("https://store-site-backend-static.ak.epicgames.com/freeGamesPromotions") as request:
                 if not request.ok:
-                    print(f"Something wrong with Epic Games API! Code: {request.status}")
+                    print(f"Something wrong with Epic Games API! HTTP code: {request.status}")
                 epicGames = await request.json()
             async with session.get("https://store.steampowered.com/search/?maxprice=free&specials=1", headers={'user-agent': self.UA }) as request:
                 if not request.ok:
-                    print(f"Something wrong with Steam store! Code: {request.status}")
+                    print(f"Something wrong with Steam store! HTTP code: {request.status}")
                 sp = BeautifulSoup(await request.text(), "html.parser")
         await session.close()
         list = []
@@ -99,7 +99,7 @@ class Commands(commands.Cog):
             if i["promotions"]:
                 if i["promotions"]["promotionalOffers"]:
                     if not i["price"]["totalPrice"]["discountPrice"]:
-                        embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple())
+                        embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
                         embed.set_image(url=i["keyImages"][0]["url"])
                         embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
                         list.append(embed)
