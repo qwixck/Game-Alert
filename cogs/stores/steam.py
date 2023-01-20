@@ -44,7 +44,7 @@ class Steam(commands.Cog):
             channels: dict = json.load(f)
         for channel in channels:
             try:
-                _channel = await self.bot.fetch_channel(channels[str(channel)]["channel"])
+                _channel = self.bot.get_channel(channels[str(channel)]["channel"])
                 await _channel.send(embeds=list)
             except discord.errors.HTTPException:
                 pass
