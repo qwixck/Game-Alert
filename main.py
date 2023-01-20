@@ -21,6 +21,9 @@ async def watching():
 for filename in os.listdir("./cogs"):
     if filename.endswith(".py"):
         bot.load_extension(f"cogs.{filename[:-3]}")
+for filename in os.listdir("./cogs/stores"):
+    if filename.endswith(".py"):
+        bot.load_extension(f"cogs.stores.{filename[:-3]}")
 
 watching.start()
 
