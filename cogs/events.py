@@ -53,6 +53,8 @@ class Events(commands.Cog):
             await ctx.send("This command requires to be executed in a NSFW channel")
         elif isinstance(error, commands.errors.MemberNotFound):
             await ctx.send("Member wasn't found")
+        elif isinstance(error, commands.errors.CommandNotFound):
+            pass
         else:  
             print('Ignoring exception in command {}:'.format(ctx.command), file=sys.stderr)
             traceback.print_exception(type(error), error, error.__traceback__, file=sys.stderr)
