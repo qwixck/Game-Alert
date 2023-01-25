@@ -26,7 +26,7 @@ class EpicGames(commands.Cog):
             if i["promotions"]:
                 if i["promotions"]["promotionalOffers"]:
                     if not i["price"]["totalPrice"]["discountPrice"]:
-                        if i["title"] not in games["games"]:
+                        if not i["title"] in games["games"]:
                             embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple())
                             embed.set_image(url=i["keyImages"][0]["url"])
                             embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
