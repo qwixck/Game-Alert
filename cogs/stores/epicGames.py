@@ -3,6 +3,7 @@ from discord.ext import commands, tasks
 
 import aiohttp
 import json
+import datetime
 
 class EpicGames(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -27,7 +28,7 @@ class EpicGames(commands.Cog):
                 if i["promotions"]["promotionalOffers"]:
                     if not i["price"]["totalPrice"]["discountPrice"]:
                         if not i["title"] in games["games"]:
-                            embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple())
+                            embed = discord.Embed(title=i["title"], description=i["description"], url=f"https://epicgames.com/store/product/{i['productSlug']}", color=discord.Color.blurple(), timestamp=datetime.datetime.utcnow())
                             embed.set_image(url=i["keyImages"][0]["url"])
                             embed.set_author(name="Epic Games", icon_url=self.epicGamesIcon)
                             list.append(embed)

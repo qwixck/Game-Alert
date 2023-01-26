@@ -32,9 +32,6 @@ class Steam(commands.Cog):
                     embed.set_author(name="Steam", icon_url=self.steamIcon)
                     list.append(embed)
                     games["games"].append(i.find("div", {"class": "responsive_search_name_combined"}).span.text)
-                for g in games["games"]:
-                    if g != i.find("div", {"class": "responsive_search_name_combined"}).span.text:
-                        games["games"].pop(games["games"].index(g))
         # if no games/dlcs are available
         except AttributeError:
             pass
